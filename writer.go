@@ -1,12 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func writePovRaySpheres(cells []cell) {
-	for i := 0; i < len(cells); i++ {
+	for _, c := range cells {
 		fmt.Println("sphere {")
-		fmt.Println("    <0, 0, 0>, 1")
+		fmt.Println("    " + povrayVector(c.position) + ", 1")
 		fmt.Println("    texture {GROWTH_T}")
 		fmt.Println("}")
 	}
+}
+
+func povrayVector(v Vector3) string {
+	return fmt.Sprintf("<%v, %v, %v>", v.x, v.y, v.z)
 }

@@ -4,7 +4,7 @@
 #declare GROWTH_T = texture { pigment {White}}
 
 camera {
-    location <0, 2, -3>
+    location <0, 2, -6>
     look_at <0, 0, 1>
 }
 
