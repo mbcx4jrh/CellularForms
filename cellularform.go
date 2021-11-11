@@ -1,7 +1,9 @@
 package main
 
 type cell struct {
+	index    int
 	position Vector3
+	links    []cell
 }
 
 type cellform struct {
@@ -14,7 +16,7 @@ func createCellsStructure(maxCells int) *cellform {
 }
 
 func (c *cellform) seedMesh(m mesh) {
-	for _, v := range m.vertices {
-		c.cells = append(c.cells, cell{v})
-	}
+
+	seedCells := importMesh(m)
+	c.cells = append(c.cells, seedCells...)
 }
