@@ -6,6 +6,15 @@ type cell struct {
 	links    []cell
 }
 
+type cellformParams struct {
+	linkLength      float64
+	springFactor    float64
+	planarFactor    float64
+	bulgeFactor     float64
+	repulsionRange  float64
+	repulsionFactor float64
+}
+
 type cellform struct {
 	cells []cell
 }
@@ -16,7 +25,10 @@ func createCellsStructure(maxCells int) *cellform {
 }
 
 func (c *cellform) seedMesh(m mesh) {
-
 	seedCells := importMesh(m)
 	c.cells = append(c.cells, seedCells...)
+}
+
+func (c *cellform) iterate() {
+
 }

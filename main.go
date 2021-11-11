@@ -27,6 +27,9 @@ func main() {
 	debug("Initial seed mesh contains " + strconv.Itoa(len(form.cells)) + " cells")
 
 	debug("Running for " + strconv.Itoa(iterations) + " iterations")
+	for i := 0; i < iterations; i++ {
+		form.iterate()
+	}
 
 	debug("<--POVRAY START-->")
 	writePovRaySpheres(form.cells)
