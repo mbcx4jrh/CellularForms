@@ -1,4 +1,7 @@
-./cellularform -v > povray/foo.inc
-pushd povray
-povray default_render.pov
+./cellularform -v
+pushd output
+for file in *.pov
+do
+  povray $file
+done
 popd
