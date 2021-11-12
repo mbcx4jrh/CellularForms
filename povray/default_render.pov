@@ -12,4 +12,4 @@ light_source {
     <2, 4, -3> colour White
 }
 
-#include "foo.inc"
+// Auto generated below 
