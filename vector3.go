@@ -29,3 +29,7 @@ func (v1 *Vector3) Multiply(n float64) {
 func SqrMagnitude(v1 *Vector3) float64 {
 	return v1.x*v1.x + v1.y*v1.y + v1.z*v1.z
 }
+
+func Dot(v1 *Vector3, v2 *Vector3) float64 {
+	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
+}

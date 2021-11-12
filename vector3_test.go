@@ -61,3 +61,10 @@ func TestSqrMagnitude(t *testing.T) {
 	sqrMag := SqrMagnitude(&v1)
 	assert.Equal(t, expected, sqrMag)
 }
+
+func TestDot(t *testing.T) {
+	v1 := Vector3{1.0, 1.0, 1.0}
+	v2 := Vector3{1.0, 2.0, 3.0}
+	dot := Dot(&v1, &v2)
+	assert.InDelta(t, 6.0, dot, delta)
+}
