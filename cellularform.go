@@ -5,6 +5,7 @@ import "fmt"
 type cell struct {
 	index    int
 	position Vector3
+	normal   Vector3
 	links    []cell
 }
 

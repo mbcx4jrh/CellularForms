@@ -42,7 +42,6 @@ func TestSubtract(t *testing.T) {
 
 	//check v2 hasnt changed
 	assert.Equal(v2.x, 1.1)
-
 }
 
 func TestMultiply(t *testing.T) {
@@ -67,4 +66,14 @@ func TestDot(t *testing.T) {
 	v2 := Vector3{1.0, 2.0, 3.0}
 	dot := Dot(&v1, &v2)
 	assert.InDelta(t, 6.0, dot, delta)
+}
+
+func TestNormalise(t *testing.T) {
+	v1 := Vector3{3.0, 0.0, 0.0}
+
+	v1.Normalise()
+	assert := assert.New(t)
+	assert.InDelta(v1.x, 1.0, delta)
+	assert.InDelta(v1.y, 0.0, delta)
+	assert.InDelta(v1.z, 0.0, delta)
 }
