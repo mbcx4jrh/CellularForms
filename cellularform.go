@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type cell struct {
 	index    int
 	position Vector3
@@ -16,12 +18,13 @@ type cellformParams struct {
 }
 
 type cellform struct {
-	cells []cell
+	cells  []cell
+	params cellformParams
 }
 
-func NewCellform(maxCells int) *cellform {
+func NewCellform(maxCells int, params cellformParams) *cellform {
 	var cells []cell = make([]cell, maxCells)
-	return &cellform{cells[0:0]}
+	return &cellform{cells[0:0], params}
 }
 
 func (c *cellform) seedMesh(m mesh) {
@@ -31,4 +34,14 @@ func (c *cellform) seedMesh(m mesh) {
 
 func (c *cellform) iterate() {
 
+}
+
+func (c cellformParams) asString() string {
+	return fmt.Sprintf("linkLength = %f\n"+
+		"springFactor = %f\n"+
+		"planarfactor = %f\n"+
+		"bulgeFactor = %f\n"+
+		"repulsionRange = %f\n"+
+		"repulsionFactor = %f",
+		c.linkLength, c.springFactor, c.planarFactor, c.bulgeFactor, c.repulsionRange, c.repulsionFactor)
 }

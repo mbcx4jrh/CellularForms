@@ -17,6 +17,7 @@ func main() {
 	var outputFreq int
 	var folder string
 	var filePrefix string
+	var paramsFile string
 	var form *cellform
 
 	flag.BoolVar(&verbose, "v", false, "Verbose output")
@@ -26,12 +27,17 @@ func main() {
 	flag.IntVar(&outputFreq, "of", 10, "the frequency at whoh an output file is generated")
 	flag.StringVar(&folder, "o", "output", "The folder name for the output files")
 	flag.StringVar(&filePrefix, "f", "cell-", "The file name prefix to use for output files")
+	flag.StringVar(&paramsFile, "p", "default.params", "The parameters file")
 	flag.Parse()
 
 	debug("Verbose output is on")
+
+	params := getParams(paramsFile)
+	debug(params.asString())
+
 	debug("Initialising cell array to maximum of " + strconv.Itoa(maxCells) + "...")
 
-	form = NewCellform(maxCells)
+	form = NewCellform(maxCells, params)
 	form.seedMesh(isocahedron())
 	debug("Initial seed mesh contains " + strconv.Itoa(len(form.cells)) + " cells")
 
@@ -51,11 +57,34 @@ func main() {
 		}
 		form.iterate()
 	}
-
+	debug("Finished after " + strconv.Itoa(iterations) + " iterations")
 }
 
 func debug(message string) {
 	if verbose {
 		println(message)
 	}
+}
+
+func getParams(filename string) cellformParams {
+	params, err := ReadPropertiesFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	linkLength := getFloat(params["linkLength"])
+	springFactor := getFloat(params["springFactor"])
+	planarFactor := getFloat(params["planarFactor"])
+	bulgeFactor := getFloat(params["bulgeFactor"])
+	repulsionRange := getFloat(params["repulsionRange"])
+	repulsionFactor := getFloat(params["repulsionFactor"])
+
+	return cellformParams{linkLength, springFactor, planarFactor, bulgeFactor, repulsionRange, repulsionFactor}
+}
+
+func getFloat(p string) float64 {
+	f, err := strconv.ParseFloat(p, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return f
 }
