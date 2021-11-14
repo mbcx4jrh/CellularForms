@@ -1,8 +1,10 @@
 package main
 
+import "github.com/mbcx4jrh/vec3"
+
 type mesh struct {
 	triangles [][3]int
-	vertices  []Vector3
+	vertices  []vec3.Vector3
 }
 
 func isocahedron() mesh {
@@ -10,10 +12,10 @@ func isocahedron() mesh {
 	a := 0.8506507174597755
 	b := 0.5257312591858783
 
-	vertices := []Vector3{
-		Vector3{-a, -b, 0}, Vector3{-a, b, 0}, Vector3{-b, 0, -a}, Vector3{-b, 0, a},
-		Vector3{0, -a, -b}, Vector3{0, -a, b}, Vector3{0, a, -b}, Vector3{0, a, b},
-		Vector3{b, 0, -a}, Vector3{b, 0, a}, Vector3{a, -b, 0}, Vector3{a, b, 0},
+	vertices := []vec3.Vector3{
+		vec3.Vector3{X: -a, Y: -b, Z: 0}, vec3.Vector3{X: -a, Y: b, Z: 0}, vec3.Vector3{X: -b, Y: 0, Z: -a}, vec3.Vector3{X: -b, Y: 0, Z: a},
+		vec3.Vector3{X: 0, Y: -a, Z: -b}, vec3.Vector3{X: 0, Y: -a, Z: b}, vec3.Vector3{X: 0, Y: a, Z: -b}, vec3.Vector3{X: 0, Y: a, Z: b},
+		vec3.Vector3{X: b, Y: 0, Z: -a}, vec3.Vector3{X: b, Y: 0, Z: a}, vec3.Vector3{X: a, Y: -b, Z: 0}, vec3.Vector3{X: a, Y: b, Z: 0},
 	}
 
 	triangles := [][3]int{

@@ -8,7 +8,7 @@ func importMesh(m mesh) []cell {
 	cells := make([]cell, 0, len(m.vertices))
 	for _, v := range m.vertices {
 		index := len(cells)
-		cells = append(cells, cell{index, v, v, []cell{}})
+		cells = append(cells, cell{index, v, v, v, []cell{}})
 	}
 
 	//initialise mapping for triangles on a vertex

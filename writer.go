@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/mbcx4jrh/vec3"
 )
 
 type cellWriter struct {
@@ -58,6 +60,6 @@ func copyDefault(f *os.File, defaultFile string) {
 	f.Write(content)
 }
 
-func povrayVector(v Vector3) string {
-	return fmt.Sprintf("<%v, %v, %v>", v.x, v.y, v.z)
+func povrayVector(v vec3.Vector3) string {
+	return fmt.Sprintf("<%v, %v, %v>", v.X, v.Y, v.Z)
 }
