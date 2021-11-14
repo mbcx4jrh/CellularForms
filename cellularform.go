@@ -2,13 +2,6 @@ package main
 
 import "fmt"
 
-type cell struct {
-	index    int
-	position Vector3
-	normal   Vector3
-	links    []cell
-}
-
 type cellformParams struct {
 	linkLength      float64
 	springFactor    float64
@@ -34,7 +27,9 @@ func (c *cellform) seedMesh(m mesh) {
 }
 
 func (c *cellform) iterate() {
-
+	for _, cell := range c.cells {
+		cell.computeNormal()
+	}
 }
 
 func (c cellformParams) asString() string {

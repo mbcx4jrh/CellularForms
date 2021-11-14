@@ -91,5 +91,21 @@ func TestCross(t *testing.T) {
 	assert := assert.New(t)
 	assert.Equal(k, Cross(&i, &j))
 	assert.Equal(i, Cross(&j, &k))
+	assert.Equal(j, Cross(&k, &i))
 	assert.Equal(ni, Cross(&k, &j))
+}
+
+func TestNewSubtract(t *testing.T) {
+	v1 := Vector3{0, 0, 0}
+	v2 := Vector3{1, 2, 3}
+	r := NewSubtract(&v1, &v2)
+
+	assert.Equal(t, r, Vector3{-1, -2, -3})
+}
+
+func TestNegate(t *testing.T) {
+	v1 := Vector3{1, 2, 3}
+	v1.Negate()
+
+	assert.Equal(t, Vector3{-1, -2, -3}, v1)
 }
