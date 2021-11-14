@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -58,7 +59,9 @@ func TestSqrMagnitude(t *testing.T) {
 	v1 := Vector3{3.0, 3.0, 4.0}
 	expected := 3.0*3.0 + 3.0*3.0 + 4.0*4.0
 	sqrMag := SqrMagnitude(&v1)
+	mag := Magnitude(&v1)
 	assert.Equal(t, expected, sqrMag)
+	assert.InDelta(t, math.Sqrt(expected), mag, delta)
 }
 
 func TestDot(t *testing.T) {
@@ -76,4 +79,17 @@ func TestNormalise(t *testing.T) {
 	assert.InDelta(v1.x, 1.0, delta)
 	assert.InDelta(v1.y, 0.0, delta)
 	assert.InDelta(v1.z, 0.0, delta)
+}
+
+func TestCross(t *testing.T) {
+
+	i := Vector3{1, 0, 0}
+	j := Vector3{0, 1, 0}
+	k := Vector3{0, 0, 1}
+	ni := Vector3{-1, 0, 0}
+
+	assert := assert.New(t)
+	assert.Equal(k, Cross(&i, &j))
+	assert.Equal(i, Cross(&j, &k))
+	assert.Equal(ni, Cross(&k, &j))
 }

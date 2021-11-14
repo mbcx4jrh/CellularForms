@@ -46,3 +46,10 @@ func (v1 *Vector3) Normalise() {
 	v1.y = v1.y / m
 	v1.z = v1.z / m
 }
+
+func Cross(v1, v2 *Vector3) Vector3 {
+	i := v1.y*v2.z - v1.z*v2.y
+	j := v1.z*v2.x - v1.x*v2.z
+	k := v1.x*v2.y - v1.y*v2.x
+	return Vector3{i, j, k}
+}
