@@ -77,8 +77,9 @@ func getParams(filename string) cellformParams {
 	bulgeFactor := getFloat(params["bulgeFactor"])
 	repulsionRange := getFloat(params["repulsionRange"])
 	repulsionFactor := getFloat(params["repulsionFactor"])
+	feedRate := getFloat(params["feedRate"])
 
-	return cellformParams{linkLength, springFactor, planarFactor, bulgeFactor, repulsionRange, repulsionFactor}
+	return cellformParams{linkLength, springFactor, planarFactor, bulgeFactor, repulsionRange, repulsionFactor, feedRate}
 }
 
 func getFloat(p string) float64 {

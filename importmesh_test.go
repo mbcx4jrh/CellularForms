@@ -39,3 +39,16 @@ func TestLinksNeighbourhood(t *testing.T) {
 	assert.Equal(p3, cells[0].links[1].position)
 	assert.Equal(p4, cells[0].links[2].position)
 }
+
+func TestIsocahedron(t *testing.T) {
+	m := isocahedron()
+	cells := importMesh(m)
+	for i := 0; i < len(cells); i++ {
+		assert.Greater(t, len(cells[i].links), 0)
+	}
+	for _, c := range cells {
+		assert.Greater(t, len(c.links), 0)
+	}
+
+	assert.Greater(t, len(cells[0].links[4].links), 0)
+}

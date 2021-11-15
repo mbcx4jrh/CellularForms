@@ -15,16 +15,18 @@ type cellformParams struct {
 	bulgeFactor     float64
 	repulsionRange  float64
 	repulsionFactor float64
+	feedRate        float64
 }
 
 type cellform struct {
-	cells  []cell
-	params cellformParams
+	cells    []cell
+	params   cellformParams
+	maxCells int
 }
 
 func NewCellform(maxCells int, params cellformParams) *cellform {
 	var cells []cell = make([]cell, maxCells)
-	return &cellform{cells[0:0], params}
+	return &cellform{cells[0:0], params, maxCells}
 }
 
 func (c *cellform) seedMesh(m mesh) {
@@ -33,11 +35,14 @@ func (c *cellform) seedMesh(m mesh) {
 }
 
 func (c *cellform) iterate() {
+	c.checkForSplits()
 	debug(fmt.Sprintf("Iterating through %d cells", len(c.cells)))
 	link2 := c.params.linkLength * c.params.linkLength
 	r2 := c.params.repulsionRange * c.params.repulsionRange
 	start := time.Now()
-	for _, cell := range c.cells {
+	//for _, cell := range c.cells {
+	for i := 0; i < len(c.cells); i++ {
+		cell := &c.cells[i]
 		cell.computeNormal()
 		d_spring_sum := vec3.Zero()
 		d_planar_sum := vec3.Zero()
@@ -80,16 +85,32 @@ func (c *cellform) iterate() {
 		p = vec3.Add(p, vec3.Mult(d_collision, c.params.repulsionFactor))
 
 	}
-	c.updatePositions()
+	c.updatePositionsAndFeed()
 	t := time.Now()
 	elapsed := t.Sub(start)
 	var average time.Duration = time.Duration(elapsed.Nanoseconds() / int64(len(c.cells)))
 	debug("Average time per cell " + average.String())
 }
 
-func (c *cellform) updatePositions() {
-	for _, cell := range c.cells {
+func (c *cellform) checkForSplits() {
+	n := len(c.cells)
+	for i := 0; i < n; i++ {
+		if len(c.cells) >= c.maxCells {
+			return
+		}
+		if c.cells[i].food > 1 {
+			newCell := c.cells[i].Split()
+			c.cells = append(c.cells, newCell)
+		}
+	}
+}
+
+func (c *cellform) updatePositionsAndFeed() {
+	for i := 0; i < len(c.cells); i++ {
+		cell := &c.cells[i]
 		cell.position = cell.updatedPosition
+		cell.food += c.params.feedRate
+		debug(fmt.Sprintf("Food is %f", cell.food))
 	}
 }
 
@@ -99,6 +120,7 @@ func (c cellformParams) asString() string {
 		"planarfactor = %f\n"+
 		"bulgeFactor = %f\n"+
 		"repulsionRange = %f\n"+
-		"repulsionFactor = %f",
-		c.linkLength, c.springFactor, c.planarFactor, c.bulgeFactor, c.repulsionRange, c.repulsionFactor)
+		"repulsionFactor = %f\n"+
+		"feedRate = %f",
+		c.linkLength, c.springFactor, c.planarFactor, c.bulgeFactor, c.repulsionRange, c.repulsionFactor, c.feedRate)
 }

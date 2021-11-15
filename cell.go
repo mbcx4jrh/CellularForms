@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/mbcx4jrh/vec3"
@@ -35,6 +36,7 @@ func (c *cell) computeNormal() {
 }
 
 func (c *cell) Split() cell {
+	debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
 	daughter := NewCell(c.position, c.normal)
 	n := len(c.links)
 	if n == 0 {
@@ -61,8 +63,9 @@ func (c *cell) Split() cell {
 
 	//daughter links
 	daughter.links = append(daughter.links, c.links[opposite])
-	for i := (opposite + 1) % n; i != nearest; i = (1 + 1) % n {
+	for i := (opposite + 1) % n; i != nearest; i = (i + 1) % n {
 		daughter.links = append(daughter.links, c.links[i])
+		debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
 		c.links[i].replaceLink(c, &daughter)
 	}
 	c.links[nearest].addAfter(c, &daughter)
@@ -74,6 +77,7 @@ func (c *cell) Split() cell {
 
 	c.computeNewPosition()
 	daughter.computeNewPosition()
+	c.food -= 1
 	return daughter
 }
 
@@ -113,6 +117,7 @@ func indexOf(a []*cell, v *cell) int {
 			return i
 		}
 	}
+	debug(fmt.Sprintf("Couldnt find cell %d in %d links", v.id, len(a)))
 	return -1
 }
 

@@ -21,3 +21,20 @@ func TestPointersForLinks(t *testing.T) {
 
 	assert.Equal(t, p2, c1.links[0].position)
 }
+
+func TestPointerForSliceOfCells(t *testing.T) {
+	cells := []cell{}
+	c := NewCell(vec3.Zero(), vec3.Zero())
+	cells = append(cells, c)
+
+	cells[0].food = 1
+
+	assert.Equal(t, 1.0, cells[0].food)
+
+	aCell := &cells[0]
+
+	aCell.food += 0.1
+
+	assert.Equal(t, 1.1, cells[0].food)
+
+}
