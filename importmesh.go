@@ -6,6 +6,8 @@ func importMesh(m mesh) []cell {
 
 	//create cells
 	cells := make([]cell, 0, len(m.vertices))
+	//reset next cell id  - need to look at this for a better solution
+	nextCellId = 0
 	for _, v := range m.vertices {
 		cells = append(cells, NewCell(v, v))
 	}
@@ -41,9 +43,9 @@ func importMesh(m mesh) []cell {
 
 		//create links for each cell
 		for _, t := range verTris {
-			cell := cells[t.vertexAfter(v)]
+			cell := &cells[t.vertexAfter(v)]
 			//if !contains(cells[v].links, cell) {
-			cells[v].links = append(cells[v].links, &cell)
+			cells[v].links = append(cells[v].links, cell)
 			//}
 		}
 	}

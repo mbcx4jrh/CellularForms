@@ -16,7 +16,7 @@ type cell struct {
 	links           []*cell
 }
 
-var id uint64 = 0
+var nextCellId uint64
 
 func (c *cell) computeNormal() {
 	sum := vec3.Zero()
@@ -82,8 +82,8 @@ func (c *cell) Split() cell {
 }
 
 func NewCell(position, normal vec3.Vector3) cell {
-	c := cell{id, position, position, normal, 0, []*cell{}}
-	id++
+	c := cell{nextCellId, position, position, normal, 0, []*cell{}}
+	nextCellId++
 	return c
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -49,6 +50,6 @@ func TestIsocahedron(t *testing.T) {
 	for _, c := range cells {
 		assert.Greater(t, len(c.links), 0)
 	}
-
+	debug(fmt.Sprintf("cell 4 is id %d", cells[0].links[4].id))
 	assert.Greater(t, len(cells[0].links[4].links), 0)
 }
