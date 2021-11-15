@@ -45,10 +45,10 @@ func TestIsocahedron(t *testing.T) {
 	m := isocahedron()
 	cells := importMesh(m)
 	for i := 0; i < len(cells); i++ {
-		assert.Greater(t, len(cells[i].links), 0)
+		assert.Equal(t, len(cells[i].links), 5)
 	}
 	for _, c := range cells {
-		assert.Greater(t, len(c.links), 0)
+		assert.Equal(t, len(c.links), 5)
 	}
 	debug(fmt.Sprintf("cell 4 is id %d", cells[0].links[4].id))
 	assert.Greater(t, len(cells[0].links[4].links), 0)

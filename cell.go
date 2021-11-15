@@ -35,12 +35,14 @@ func (c *cell) computeNormal() {
 	c.normal = newNormal
 }
 
-func (c *cell) Split() cell {
-	debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
-	daughter := NewCell(c.position, c.normal)
+func (c *cell) Split(daughter *cell) {
+	//debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
+	//daughter := NewCell(c.position, c.normal)
+	daughter.position = c.position
+	daughter.normal = c.normal
 	n := len(c.links)
 	if n == 0 {
-		return daughter
+		return
 	}
 	//find nearest neighbour
 	nearest_d := math.MaxFloat64
@@ -57,19 +59,19 @@ func (c *cell) Split() cell {
 	//parent links
 	newLinks := []*cell{}
 	for i := nearest; i != (opposite+1)%n; i = (i + 1) % n {
-		newLinks = append(newLinks, (c.links[i]))
+		newLinks = append(newLinks, c.links[i])
 	}
-	newLinks = append(newLinks, &daughter)
+	newLinks = append(newLinks, daughter)
 
 	//daughter links
 	daughter.links = append(daughter.links, c.links[opposite])
 	for i := (opposite + 1) % n; i != nearest; i = (i + 1) % n {
 		daughter.links = append(daughter.links, c.links[i])
-		debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
-		c.links[i].replaceLink(c, &daughter)
+		//debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
+		c.links[i].replaceLink(c, daughter)
 	}
-	c.links[nearest].addAfter(c, &daughter)
-	c.links[opposite].addBefore(c, &daughter)
+	c.links[nearest].addAfter(c, daughter)
+	c.links[opposite].addBefore(c, daughter)
 	daughter.links = append(daughter.links, c.links[nearest])
 	daughter.links = append(daughter.links, c)
 
@@ -78,7 +80,6 @@ func (c *cell) Split() cell {
 	c.computeNewPosition()
 	daughter.computeNewPosition()
 	c.food -= 1
-	return daughter
 }
 
 func NewCell(position, normal vec3.Vector3) cell {
@@ -122,5 +123,8 @@ func indexOf(a []*cell, v *cell) int {
 }
 
 func insert(a []*cell, c *cell, i int) []*cell {
+	if len(a) == i {
+		return append(a, c)
+	}
 	return append(a[:i], append([]*cell{c}, a[i:]...)...)
 }

@@ -83,13 +83,14 @@ func (c *cellform) iterate() {
 		p = vec3.Add(p, vec3.Mult(d_planar, c.params.planarFactor))
 		p = vec3.Add(p, vec3.Mult(d_bulge, c.params.bulgeFactor))
 		p = vec3.Add(p, vec3.Mult(d_collision, c.params.repulsionFactor))
-
+		cell.updatedPosition = p
 	}
 	c.updatePositionsAndFeed()
 	t := time.Now()
 	elapsed := t.Sub(start)
 	var average time.Duration = time.Duration(elapsed.Nanoseconds() / int64(len(c.cells)))
 	debug("Average time per cell " + average.String())
+	debug("Time per iteration    " + elapsed.String())
 }
 
 func (c *cellform) checkForSplits() {
@@ -98,9 +99,12 @@ func (c *cellform) checkForSplits() {
 		if len(c.cells) >= c.maxCells {
 			return
 		}
-		if c.cells[i].food > 1 {
-			newCell := c.cells[i].Split()
-			c.cells = append(c.cells, newCell)
+		if c.cells[i].food >= 1 {
+			daughter := NewCell(c.cells[i].position, c.cells[i].normal)
+			n = len(c.cells)
+			c.cells = append(c.cells, daughter)
+			c.cells[i].Split(&(c.cells[n]))
+
 		}
 	}
 }
@@ -110,7 +114,7 @@ func (c *cellform) updatePositionsAndFeed() {
 		cell := &c.cells[i]
 		cell.position = cell.updatedPosition
 		cell.food += c.params.feedRate
-		debug(fmt.Sprintf("Food is %f", cell.food))
+		//debug(fmt.Sprintf("Food is %f", cell.food))
 	}
 }
 
