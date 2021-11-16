@@ -42,7 +42,8 @@ func (c *cellform) iterate() {
 	start := time.Now()
 	//for _, cell := range c.cells {
 	for i := 0; i < len(c.cells); i++ {
-		cell := &c.cells[i]
+		cell := &(c.cells[i])
+
 		cell.computeNormal()
 		d_spring_sum := vec3.Zero()
 		d_planar_sum := vec3.Zero()
@@ -100,18 +101,18 @@ func (c *cellform) checkForSplits() {
 			return
 		}
 		if c.cells[i].food >= 1 {
-			daughter := NewCell(c.cells[i].position, c.cells[i].normal)
-			n = len(c.cells)
-			c.cells = append(c.cells, daughter)
-			c.cells[i].Split(&(c.cells[n]))
-
+			c.cells = append(c.cells, NewCell(c.cells[i].position, c.cells[i].normal))
+			s := len(c.cells) - 1
+			ValidateLinksGlobally(c.cells, "[before split]")
+			c.cells[i].Split(&(c.cells[s]))
+			ValidateLinksGlobally(c.cells, "[after split]")
 		}
 	}
 }
 
 func (c *cellform) updatePositionsAndFeed() {
 	for i := 0; i < len(c.cells); i++ {
-		cell := &c.cells[i]
+		cell := &(c.cells[i])
 		cell.position = cell.updatedPosition
 		cell.food += c.params.feedRate
 		//debug(fmt.Sprintf("Food is %f", cell.food))

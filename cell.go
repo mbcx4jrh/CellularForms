@@ -23,7 +23,6 @@ func (c *cell) computeNormal() {
 	for i, n := range c.links {
 		a := vec3.Subtract(n.position, c.position)
 		b := vec3.Subtract(c.links[(i+1)%len(c.links)].position, c.position)
-		//b := NewSubtract(&c.links[(i+1)%len(c.links)].position, &c.position)
 		sum = vec3.Add(sum, vec3.Cross(a, b))
 	}
 	newNormal := vec3.Normalize(sum)
@@ -36,14 +35,15 @@ func (c *cell) computeNormal() {
 }
 
 func (c *cell) Split(daughter *cell) {
-	//debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
-	//daughter := NewCell(c.position, c.normal)
+	debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
+	CellReport("pre split", c)
 	daughter.position = c.position
 	daughter.normal = c.normal
 	n := len(c.links)
 	if n == 0 {
 		return
 	}
+
 	//find nearest neighbour
 	nearest_d := math.MaxFloat64
 	nearest := -1
@@ -55,11 +55,12 @@ func (c *cell) Split(daughter *cell) {
 		}
 	}
 	opposite := (nearest + n/2) % n
-
+	debug(fmt.Sprintf("nearest %d, opposite %d", nearest, opposite))
 	//parent links
 	newLinks := []*cell{}
 	for i := nearest; i != (opposite+1)%n; i = (i + 1) % n {
 		newLinks = append(newLinks, c.links[i])
+		debug(fmt.Sprintf("add link %d to %d", i, c.links[i].id))
 	}
 	newLinks = append(newLinks, daughter)
 
@@ -67,8 +68,10 @@ func (c *cell) Split(daughter *cell) {
 	daughter.links = append(daughter.links, c.links[opposite])
 	for i := (opposite + 1) % n; i != nearest; i = (i + 1) % n {
 		daughter.links = append(daughter.links, c.links[i])
-		//debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
+		debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
+		CellReport("Before replace", c.links[i])
 		c.links[i].replaceLink(c, daughter)
+		CellReport("After replace", c.links[i])
 	}
 	c.links[nearest].addAfter(c, daughter)
 	c.links[opposite].addBefore(c, daughter)
@@ -76,7 +79,12 @@ func (c *cell) Split(daughter *cell) {
 	daughter.links = append(daughter.links, c)
 
 	c.links = newLinks
+	debug(fmt.Sprintf("links left on parent  : %d (%d) ", len(newLinks), len(c.links)))
+	debug(fmt.Sprintf("links left on daughter: %d  ", len(daughter.links)))
+	CellReport("after split", c)
 
+	//ValidateLinks(daughter, "at end of split (daughter)")
+	//ValidateLinks(c)
 	c.computeNewPosition()
 	daughter.computeNewPosition()
 	c.food -= 1

@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/mbcx4jrh/vec3"
 	. "github.com/mbcx4jrh/vec3"
 )
 
@@ -52,4 +53,14 @@ func TestIsocahedron(t *testing.T) {
 	}
 	debug(fmt.Sprintf("cell 4 is id %d", cells[0].links[4].id))
 	assert.Greater(t, len(cells[0].links[4].links), 0)
+
+	//check links back
+	i := indexOf(cells[0].links[0].links, &cells[0])
+	cells[0].links[0].links[i].position = vec3.Zero()
+	assert.Equal(t, vec3.Zero(), cells[0].position)
+
+	//for debug
+	d := NewCell(vec3.Zero(), vec3.Zero())
+	cells[0].Split(&d)
+	debug("fpp")
 }
