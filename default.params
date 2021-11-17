@@ -1,5 +1,5 @@
 linkLength = 1
-springFactor = 0.1
+springFactor = 0.2
 planarFactor = 0.5
 bulgeFactor = 0
 repulsionRange = 2

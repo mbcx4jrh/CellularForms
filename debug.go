@@ -9,22 +9,15 @@ import (
 
 func CellReport(msg string, c *cell) {
 	format := msg + " Cell %d, links to %v"
-	debug(fmt.Sprintf(format, c.id, linkIds((c.links))))
-}
-
-func linkIds(links []*cell) []int {
-
-	ids := []int{}
-	for _, c := range links {
-		ids = append(ids, int(c.id))
-	}
-	return ids
+	debug(fmt.Sprintf(format, c.id, c.links))
 }
 
 //check all links are returned - used for debug
-func ValidateLinks(c *cell, msg string) {
-	for _, n := range c.links {
-		q := indexOf(n.links, c)
+func (cf *cellform) ValidateLinks(c_idx int, msg string) {
+	c := cf.Cell(c_idx)
+	for _, n_idx := range c.links {
+		n := cf.Cell(n_idx)
+		q := indexOf(n.links, c_idx)
 		if q == -1 {
 			CellReport("in validate", c)
 			CellReport("link is ", n)
@@ -33,8 +26,8 @@ func ValidateLinks(c *cell, msg string) {
 	}
 }
 
-func ValidateLinksGlobally(cells []cell, msg string) {
-	for _, c := range cells {
-		ValidateLinks(&c, msg)
+func (cf *cellform) ValidateLinksGlobally(msg string) {
+	for i := range cf.cells {
+		cf.ValidateLinks(i, msg)
 	}
 }
