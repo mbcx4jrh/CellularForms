@@ -58,9 +58,4 @@ func TestIsocahedron(t *testing.T) {
 	i := indexOf(cells[0].links[0].links, &cells[0])
 	cells[0].links[0].links[i].position = vec3.Zero()
 	assert.Equal(t, vec3.Zero(), cells[0].position)
-
-	//for debug
-	d := NewCell(vec3.Zero(), vec3.Zero())
-	cells[0].Split(&d)
-	debug("fpp")
 }
