@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/downflux/go-geometry/nd/vector"
 	"github.com/mbcx4jrh/vec3"
 )
 
-type cell struct {
+type Cell struct {
 	id              uint64
 	position        vec3.Vector3
 	updatedPosition vec3.Vector3
@@ -18,7 +19,11 @@ type cell struct {
 
 var nextCellId uint64
 
-func (cf *cellform) computeNormal(c *cell) {
+func (c *Cell) P() vector.V {
+	return *vector.New(c.position.X, c.position.Y, c.position.Z)
+}
+
+func (cf *cellform) computeNormal(c *Cell) {
 	sum := vec3.Zero()
 	for i, n := range c.links {
 		a := vec3.Subtract(cf.Cell(n).position, c.position)
@@ -96,13 +101,13 @@ func (cf *cellform) Split(c_idx int) {
 	c.food -= 1
 }
 
-func NewCell(position, normal vec3.Vector3) cell {
-	c := cell{nextCellId, position, position, normal, 0, []int{}}
+func NewCell(position, normal vec3.Vector3) Cell {
+	c := Cell{nextCellId, position, position, normal, 0, []int{}}
 	nextCellId++
 	return c
 }
 
-func (cf *cellform) computeNewPosition(c *cell) {
+func (cf *cellform) computeNewPosition(c *Cell) {
 	p := c.position
 	for _, n := range c.links {
 		p = vec3.Add(p, cf.Cell(n).position)
@@ -111,17 +116,17 @@ func (cf *cellform) computeNewPosition(c *cell) {
 	c.position = vec3.Div(p, count)
 }
 
-func (c *cell) addAfter(after, newCell int) {
+func (c *Cell) addAfter(after, newCell int) {
 	i := indexOf(c.links, after)
 	c.links = insert(c.links, newCell, i+1)
 }
 
-func (c *cell) addBefore(before, newCell int) {
+func (c *Cell) addBefore(before, newCell int) {
 	i := indexOf(c.links, before)
 	c.links = insert(c.links, newCell, i)
 }
 
-func (c *cell) replaceLink(old, newCell int) {
+func (c *Cell) replaceLink(old, newCell int) {
 	i := indexOf(c.links, old)
 	c.links[i] = newCell
 }

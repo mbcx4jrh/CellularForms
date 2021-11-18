@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"time"
 
+	"github.com/downflux/go-geometry/nd/hypersphere"
+	"github.com/downflux/go-kd/kd"
+	"github.com/downflux/go-kd/point"
 	"github.com/mbcx4jrh/vec3"
 )
 
@@ -19,17 +23,17 @@ type cellformParams struct {
 }
 
 type cellform struct {
-	cells    []cell
+	cells    []Cell
 	params   cellformParams
 	maxCells int
 }
 
 func NewCellform(maxCells int, params cellformParams) *cellform {
-	var cells []cell = make([]cell, maxCells)
+	var cells []Cell = make([]Cell, maxCells)
 	return &cellform{cells[0:0], params, maxCells}
 }
 
-func (cf *cellform) Cell(i int) *cell {
+func (cf *cellform) Cell(i int) *Cell {
 	return &cf.cells[i]
 }
 
@@ -44,6 +48,18 @@ func (cf *cellform) iterate() {
 	link2 := cf.params.linkLength * cf.params.linkLength
 	r2 := cf.params.repulsionRange * cf.params.repulsionRange
 	start := time.Now()
+
+	treePoints := make([]point.P, len(cf.cells))
+	for i := range cf.cells {
+		treePoints[i] = &cf.cells[i]
+	}
+	time_conv := time.Now()
+
+	tree, err := kd.New(treePoints)
+	if err != nil {
+		log.Fatal("Error returned from building k-d tree", err)
+	}
+	time_tree := time.Now()
 	//for _, cell := range c.cells {
 	for i := 0; i < len(cf.cells); i++ {
 		cell := &(cf.cells[i])
@@ -74,15 +90,25 @@ func (cf *cellform) iterate() {
 		d_planar := vec3.Div(d_planar_sum, n)
 		d_bulge := vec3.Mult(cell.normal, d_bulge_sum/n)
 
-		nearby := 0
-		for _, o := range cf.cells {
-			between := vec3.Subtract(cell.position, o.position)
+		ns, err := kd.RadialFilter(
+			tree,
+			*hypersphere.New(cell.P(), cf.params.repulsionRange),
+			func(p point.P) bool { return true })
+		if err != nil {
+			log.Fatal("Fucked up k-d tree search", err)
+		}
+
+		for _, o := range ns {
+
+			between := vec3.Subtract(cell.position, o.(*Cell).position)
 			dist2 := between.LengthSqr()
 			if dist2 < r2 {
 				d_collision_sum = vec3.Add(d_collision_sum, vec3.Mult(between, (r2-dist2)/r2))
-				nearby++
 			}
 		}
+
+		nearby := len(ns)
+
 		d_collision := vec3.Div(d_collision_sum, float64(nearby)+n)
 
 		p := vec3.Add(cell.position, vec3.Mult(d_spring, cf.params.springFactor))
@@ -97,6 +123,8 @@ func (cf *cellform) iterate() {
 	var average time.Duration = time.Duration(elapsed.Nanoseconds() / int64(len(cf.cells)))
 	debug("Average time per cell " + average.String())
 	debug("Time per iteration    " + elapsed.String())
+	debug("Interface conversion took " + time_conv.Sub(start).String())
+	debug("Tree building took " + time_tree.Sub(time_conv).String())
 }
 
 func (c *cellform) checkForSplits() {

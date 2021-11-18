@@ -7,7 +7,7 @@ import (
 
 //some debug functions
 
-func CellReport(msg string, c *cell) {
+func CellReport(msg string, c *Cell) {
 	format := msg + " Cell %d, links to %v"
 	debug(fmt.Sprintf(format, c.id, c.links))
 }

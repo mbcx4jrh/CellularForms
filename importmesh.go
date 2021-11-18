@@ -2,10 +2,10 @@ package main
 
 import "fmt"
 
-func importMesh(m mesh) []cell {
+func importMesh(m mesh) []Cell {
 
 	//create cells
-	cells := make([]cell, 0, len(m.vertices))
+	cells := make([]Cell, 0, len(m.vertices))
 	//reset next cell id  - need to look at this for a better solution
 	nextCellId = 0
 	for _, v := range m.vertices {

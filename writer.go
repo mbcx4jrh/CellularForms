@@ -31,7 +31,7 @@ func (c cellWriter) initialise() error {
 	return err
 }
 
-func (c *cellWriter) writeNextFile(cells []cell) {
+func (c *cellWriter) writeNextFile(cells []Cell) {
 
 	f, err := os.Create(fmt.Sprintf(c.folder+"/"+c.filePrefx+"%05d.pov", c.nextFile))
 	if err != nil {
@@ -45,7 +45,7 @@ func (c *cellWriter) writeNextFile(cells []cell) {
 	c.nextFile++
 }
 
-func writeCell(f *os.File, c cell) {
+func writeCell(f *os.File, c Cell) {
 	f.WriteString("sphere {\n")
 	f.WriteString("    " + povrayVector(c.position) + ", 1\n")
 	f.WriteString("    texture {GROWTH_T}\n")
