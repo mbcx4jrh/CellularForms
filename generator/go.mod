@@ -1,4 +1,4 @@
-module joe/cellularform
+module github.com/mbc4jrh/CellularForms/generator
 
 go 1.17
 
