@@ -40,8 +40,6 @@ func (cf *cellform) computeNormal(c *Cell) {
 }
 
 func (cf *cellform) Split(c_idx int) {
-	//debug(fmt.Sprintf("Splitting cell %d with %d links", c.id, len(c.links)))
-	//CellReport("pre split", c)
 	c := cf.Cell(c_idx)
 
 	cf.cells = append(cf.cells, NewCell(c.position, c.normal))
@@ -66,12 +64,10 @@ func (cf *cellform) Split(c_idx int) {
 		}
 	}
 	opposite := (nearest + n/2) % n
-	//debug(fmt.Sprintf("nearest %d, opposite %d", nearest, opposite))
 	//parent links
 	newLinks := []int{}
 	for i := nearest; i != (opposite+1)%n; i = (i + 1) % n {
 		newLinks = append(newLinks, c.links[i])
-		//debug(fmt.Sprintf("add link %d to %d", i, c.links[i].id))
 	}
 	newLinks = append(newLinks, d_idx)
 
@@ -79,12 +75,8 @@ func (cf *cellform) Split(c_idx int) {
 	daughter.links = append(daughter.links, c.links[opposite])
 	for i := (opposite + 1) % n; i != nearest; i = (i + 1) % n {
 		daughter.links = append(daughter.links, c.links[i])
-		//debug(fmt.Sprintf("About to replace link for %d in cell %d (%d links)", c.id, c.links[i].id, len(c.links[i].links)))
-		//debug(fmt.Sprintf("cell %d reference is %x", c.links[i].id, &c.links[i]))
-		//CellReport("Before replace", c.links[i])
 
 		cf.Cell(c.links[i]).replaceLink(c_idx, d_idx)
-		//CellReport("After replace", c.links[i])
 	}
 	cf.Cell(c.links[nearest]).addAfter(c_idx, d_idx)
 	cf.Cell(c.links[opposite]).addBefore(c_idx, d_idx)
@@ -92,9 +84,6 @@ func (cf *cellform) Split(c_idx int) {
 	daughter.links = append(daughter.links, c_idx)
 
 	c.links = newLinks
-	//debug(fmt.Sprintf("links left on parent  : %d (%d) ", len(newLinks), len(c.links)))
-	//debug(fmt.Sprintf("links left on daughter: %d  ", len(daughter.links)))
-	//CellReport("after split", c)
 
 	cf.computeNewPosition(c)
 	cf.computeNewPosition(daughter)
