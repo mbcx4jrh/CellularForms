@@ -60,7 +60,6 @@ func (cf *cellform) iterate() {
 		log.Fatal("Error returned from building k-d tree", err)
 	}
 	time_tree := time.Now()
-	//for _, cell := range c.cells {
 	for i := 0; i < len(cf.cells); i++ {
 		cell := &(cf.cells[i])
 
@@ -134,9 +133,7 @@ func (c *cellform) checkForSplits() {
 			return
 		}
 		if c.cells[i].food >= 1 {
-			//c.ValidateLinksGlobally("Before split: ")
 			c.Split(i)
-			//c.ValidateLinksGlobally("After split: ")
 		}
 	}
 }
@@ -146,7 +143,6 @@ func (c *cellform) updatePositionsAndFeed() {
 		cell := &(c.cells[i])
 		cell.position = cell.updatedPosition
 		cell.food += c.params.feedRate
-		//debug(fmt.Sprintf("Food is %f", cell.food))
 	}
 }
 
