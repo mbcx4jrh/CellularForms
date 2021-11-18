@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/mbcx4jrh/vec3"
 )
 
 type cellWriter struct {
@@ -33,11 +31,10 @@ func (c cellWriter) initialise() error {
 
 func (c *cellWriter) writeNextFile(cells []Cell) {
 
-	f, err := os.Create(fmt.Sprintf(c.folder+"/"+c.filePrefx+"%05d.pov", c.nextFile))
+	f, err := os.Create(fmt.Sprintf(c.folder+"/"+c.filePrefx+"%05d.cf", c.nextFile))
 	if err != nil {
 		log.Fatal(err)
 	}
-	copyDefault(f, "povray/default_render.pov")
 	defer f.Close()
 	for _, c := range cells {
 		writeCell(f, c)
@@ -46,20 +43,5 @@ func (c *cellWriter) writeNextFile(cells []Cell) {
 }
 
 func writeCell(f *os.File, c Cell) {
-	f.WriteString("sphere {\n")
-	f.WriteString("    " + povrayVector(c.position) + ", 1\n")
-	f.WriteString("    texture {GROWTH_T}\n")
-	f.WriteString("}\n")
-}
-
-func copyDefault(f *os.File, defaultFile string) {
-	content, err := os.ReadFile(defaultFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	f.Write(content)
-}
-
-func povrayVector(v vec3.Vector3) string {
-	return fmt.Sprintf("<%v, %v, %v>", v.X, v.Y, v.Z)
+	f.WriteString(fmt.Sprintf("%v,%v,%v\n", c.position.X, c.position.Y, c.position.Z))
 }

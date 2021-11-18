@@ -3,5 +3,5 @@ springFactor = 0.5
 planarFactor = 0.5
 bulgeFactor = 0.1
 repulsionRange = 1.5
-repulsionFactor = 0.5
+repulsionFactor = 0.1
 feedRate=0.01
