@@ -2,7 +2,7 @@
  
  An exploration of simulated cellular growth first (i think) [described by Andy Lomas](https://andylomas.com/cellularForms.html)
 
- Nods also to work by:
+ Nods also to work by:  
 [Michael Fogleman](https://www.michaelfogleman.com/projects/cellular-forms/)  
 [Sage Jenson](https://www.sagejenson.com/digital-morphologies)  
   
