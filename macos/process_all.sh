@@ -1,4 +1,4 @@
-pushd output
+pushd $1
 for file in *.cf
 do
   ../form/form -v -h ../povray/default_render.pov -i $file -s 3

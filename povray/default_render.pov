@@ -3,13 +3,8 @@
 
 #declare GROWTH_T = texture { pigment {White}}
 
-camera {
-    location <0, 2, -20>
-    look_at <0, 0, 1>
-}
-
-light_source {
-    <20, 40, -30> colour White
+global_settings { 
+    ambient_light rgb<0.1,0.1,0.1>
 }
 
 // Auto generated below 

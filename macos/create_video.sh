@@ -1,0 +1,1 @@
+ffmpeg -r 30 -f image2 -s 800x600 -i $1/cell-%05d.cf.png -vcodec libx264 -crf 25  -pix_fmt yuv420p videos/$2.mp4

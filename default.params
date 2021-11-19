@@ -1,0 +1,7 @@
+linkLength = 1
+springFactor = 0.2
+planarFactor = 0.5
+bulgeFactor = 0.1
+repulsionRange = 2.0
+repulsionFactor = 0.3
+feedRate=0.1
