@@ -23,6 +23,7 @@ var headerFile string
 var offsetAverage bool
 var scale float64
 var traitsAsTextures bool
+var slice float64
 
 func main() {
 
@@ -34,6 +35,7 @@ func main() {
 	flag.StringVar(&inputFilename, "i", "cell-00001.cf", "The file to process (output from the generator")
 	flag.Float64Var(&scale, "s", 1, "Scaling factor for resultant image")
 	flag.BoolVar(&traitsAsTextures, "traits", false, "traits are inherited from parents and decide the texture of the cell")
+	flag.Float64Var(&slice, "slice", -100000000, "Removes all cells below this z coordinate")
 	flag.Parse()
 
 	debug("Verbose is on")
@@ -73,6 +75,9 @@ func writePovRayFile(cells []cell, filename string, s stats) {
 	writeCameraAndLight(file, s)
 
 	for _, c := range cells {
+		if c.position.Z < slice {
+			continue
+		}
 		file.WriteString("sphere {\n")
 		file.WriteString(fmt.Sprintf("  <%v, %v, %v>, 1\n", c.position.X, c.position.Y, c.position.Z))
 		if traitsAsTextures {
