@@ -19,6 +19,7 @@ type cell struct {
 var verbose bool
 var headerFile string
 var offsetAverage bool
+var scale float64
 
 func main() {
 
@@ -28,6 +29,7 @@ func main() {
 	flag.BoolVar(&offsetAverage, "ca", false, "Center form on average position rather than midpoint between bounds")
 	flag.StringVar(&headerFile, "h", "povray/default_render.pov", "The POV-Ray file to include at the beginning of the output file")
 	flag.StringVar(&inputFilename, "i", "cell-00001.cf", "The file to process (output from the generator")
+	flag.Float64Var(&scale, "s", 1, "Scaling factor for resultant image")
 	flag.Parse()
 
 	debug("Verbose is on")
@@ -46,10 +48,10 @@ func transform(inputFilename string) {
 		centerOnBounds(cells, stats)
 	}
 
-	writePovRayFile(cells, outputFilename(inputFilename))
+	writePovRayFile(cells, outputFilename(inputFilename), stats)
 }
 
-func writePovRayFile(cells []cell, filename string) {
+func writePovRayFile(cells []cell, filename string, s stats) {
 	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -64,6 +66,7 @@ func writePovRayFile(cells []cell, filename string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	writeCameraAndLight(file, s)
 
 	for _, c := range cells {
 		file.WriteString("sphere {\n")
@@ -71,6 +74,24 @@ func writePovRayFile(cells []cell, filename string) {
 		file.WriteString("  texture { GROWTH_T }\n")
 		file.WriteString(("}\n"))
 	}
+}
+
+func writeCameraAndLight(file *os.File, s stats) {
+	camera := vec3.New(0, 2, -5)
+	light := vec3.New(2, 4, -3)
+
+	width := (s.max.X - s.min.X + 1.0) / scale // the 1,0 is the width of a sphere
+	debugf("Using scaled width of %v", width)
+	camera = vec3.Mult(camera, width)
+	light = vec3.Mult(light, width)
+
+	file.WriteString("camera {\n")
+	file.WriteString(fmt.Sprintf("  location <%v, %v, %v>\n", camera.X, camera.Y, camera.Z))
+	file.WriteString("  look_at <0, 0, 1>\n")
+	file.WriteString("}\n")
+	file.WriteString("light_source {\n")
+	file.WriteString(fmt.Sprintf("  <%v, %v, %v> colour White\n", light.X, light.Y, light.Z))
+	file.WriteString("}\n")
 }
 
 func outputFilename(inputFilename string) string {
