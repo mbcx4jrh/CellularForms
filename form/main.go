@@ -8,20 +8,24 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/mbcx4jrh/vec3"
 )
 
 type cell struct {
-	x, y, z float64
+	position vec3.Vector3
 }
 
-var verbose bool = false
+var verbose bool
 var headerFile string
+var offsetAverage bool
 
 func main() {
 
 	var inputFilename string
 
 	flag.BoolVar(&verbose, "v", false, "Verbose output")
+	flag.BoolVar(&offsetAverage, "ca", false, "Center form on average position rather than midpoint between bounds")
 	flag.StringVar(&headerFile, "h", "povray/default_render.pov", "The POV-Ray file to include at the beginning of the output file")
 	flag.StringVar(&inputFilename, "i", "cell-00001.cf", "The file to process (output from the generator")
 	flag.Parse()
@@ -33,6 +37,14 @@ func main() {
 
 func transform(inputFilename string) {
 	cells := readFromCF(inputFilename)
+
+	stats := GetStats(cells)
+
+	if offsetAverage {
+		centerOnAverage(cells, stats)
+	} else {
+		centerOnBounds(cells, stats)
+	}
 
 	writePovRayFile(cells, outputFilename(inputFilename))
 }
@@ -55,7 +67,7 @@ func writePovRayFile(cells []cell, filename string) {
 
 	for _, c := range cells {
 		file.WriteString("sphere {\n")
-		file.WriteString(fmt.Sprintf("  <%v, %v, %v>, 1\n", c.x, c.y, c.z))
+		file.WriteString(fmt.Sprintf("  <%v, %v, %v>, 1\n", c.position.X, c.position.Y, c.position.Z))
 		file.WriteString("  texture { GROWTH_T }\n")
 		file.WriteString(("}\n"))
 	}
@@ -91,9 +103,12 @@ func readFromCF(filename string) []cell {
 }
 
 func parseCell(csv []string) cell {
-	return cell{getFloat(csv[0]),
-		getFloat(csv[1]),
-		getFloat(csv[2])}
+	return cell{
+		vec3.New(
+			getFloat(csv[0]),
+			getFloat(csv[1]),
+			getFloat(csv[2]))}
+
 }
 
 func getFloat(p string) float64 {
