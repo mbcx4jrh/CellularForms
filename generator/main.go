@@ -41,6 +41,9 @@ func main() {
 	form.seedMesh(isocahedron())
 	debug("Initial seed mesh contains " + strconv.Itoa(len(form.cells)) + " cells")
 
+	form.cells[8].trait = 1.0
+	debug("Fixed setting of 1 cell to trait 1.0")
+
 	writer := NewCellWriter(filePrefix, folder)
 	err := writer.initialise()
 	if err != nil {

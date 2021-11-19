@@ -14,6 +14,8 @@ type Cell struct {
 	updatedPosition vec3.Vector3
 	normal          vec3.Vector3
 	food            float64
+	trait           int64
+	age             float64
 	links           []int
 }
 
@@ -48,6 +50,7 @@ func (cf *cellform) Split(c_idx int) {
 
 	daughter.position = c.position
 	daughter.normal = c.normal
+	daughter.trait = c.trait
 	n := len(c.links)
 	if n == 0 {
 		return
@@ -91,7 +94,11 @@ func (cf *cellform) Split(c_idx int) {
 }
 
 func NewCell(position, normal vec3.Vector3) Cell {
-	c := Cell{nextCellId, position, position, normal, 0, []int{}}
+	//c := Cell{nextCellId, position, position, normal, 0, []int{}}
+	c := Cell{}
+	c.id = nextCellId
+	c.position = position
+	c.normal = position
 	nextCellId++
 	return c
 }

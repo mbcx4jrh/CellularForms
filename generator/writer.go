@@ -43,5 +43,5 @@ func (c *cellWriter) writeNextFile(cells []Cell) {
 }
 
 func writeCell(f *os.File, c Cell) {
-	f.WriteString(fmt.Sprintf("%v,%v,%v\n", c.position.X, c.position.Y, c.position.Z))
+	f.WriteString(fmt.Sprintf("%v,%v,%v,%v,%v\n", c.position.X, c.position.Y, c.position.Z, c.age, c.trait))
 }

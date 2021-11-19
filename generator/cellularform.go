@@ -62,7 +62,7 @@ func (cf *cellform) iterate() {
 	time_tree := time.Now()
 	for i := 0; i < len(cf.cells); i++ {
 		cell := &(cf.cells[i])
-
+		cell.age++
 		cf.computeNormal(cell)
 		d_spring_sum := vec3.Zero()
 		d_planar_sum := vec3.Zero()

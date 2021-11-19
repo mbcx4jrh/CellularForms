@@ -14,12 +14,15 @@ import (
 
 type cell struct {
 	position vec3.Vector3
+	age      float64
+	trait    int64
 }
 
 var verbose bool
 var headerFile string
 var offsetAverage bool
 var scale float64
+var traitsAsTextures bool
 
 func main() {
 
@@ -30,6 +33,7 @@ func main() {
 	flag.StringVar(&headerFile, "h", "povray/default_render.pov", "The POV-Ray file to include at the beginning of the output file")
 	flag.StringVar(&inputFilename, "i", "cell-00001.cf", "The file to process (output from the generator")
 	flag.Float64Var(&scale, "s", 1, "Scaling factor for resultant image")
+	flag.BoolVar(&traitsAsTextures, "traits", false, "traits are inherited from parents and decide the texture of the cell")
 	flag.Parse()
 
 	debug("Verbose is on")
@@ -71,7 +75,11 @@ func writePovRayFile(cells []cell, filename string, s stats) {
 	for _, c := range cells {
 		file.WriteString("sphere {\n")
 		file.WriteString(fmt.Sprintf("  <%v, %v, %v>, 1\n", c.position.X, c.position.Y, c.position.Z))
-		file.WriteString("  texture { GROWTH_T }\n")
+		if traitsAsTextures {
+			file.WriteString(fmt.Sprintf("  texture { GROWTH_T_%v }\n", c.trait))
+		} else {
+			file.WriteString("  texture { GROWTH_T }\n")
+		}
 		file.WriteString(("}\n"))
 	}
 }
@@ -124,12 +132,18 @@ func readFromCF(filename string) []cell {
 }
 
 func parseCell(csv []string) cell {
-	return cell{
-		vec3.New(
-			getFloat(csv[0]),
-			getFloat(csv[1]),
-			getFloat(csv[2]))}
+	position := vec3.New(getFloat(csv[0]), getFloat(csv[1]), getFloat(csv[2]))
+	age := getFloat(csv[3])
+	trait := getInt(csv[4])
+	return cell{position, age, trait}
+}
 
+func getInt(p string) int64 {
+	i, err := strconv.ParseInt(p, 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return i
 }
 
 func getFloat(p string) float64 {
