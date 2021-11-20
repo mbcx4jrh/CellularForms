@@ -22,6 +22,8 @@ func getFeeder(s string) Feed {
 		return constantFeeder
 	case "random":
 		return randomFeeder
+	case "trait":
+		return trait1Feeder
 	default:
 		debugf("Invalid feed parameter '%s', using constant", s)
 		return constantFeeder
@@ -36,6 +38,14 @@ func constantFeeder(cell *Cell, rate float64) {
 func randomFeeder(cell *Cell, rate float64) {
 	food := rand.Float64() * rate
 	cell.food += food
+}
+
+func trait1Feeder(cell *Cell, rate float64) {
+	m := 1.0
+	if cell.trait == 1 && cell.age > 200 {
+		m = 1.5
+	}
+	randomFeeder(cell, rate*m)
 }
 
 func (r *Rules) AsString() string {

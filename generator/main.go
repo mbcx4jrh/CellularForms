@@ -29,9 +29,9 @@ func main() {
 	flag.IntVar(&outputFreq, "of", 0, "the frequency at which an output file is generated, 0 means no output files")
 	flag.StringVar(&folder, "o", "output", "The folder name for the output files")
 	flag.StringVar(&filePrefix, "f", "cell-", "The file name prefix to use for output files")
-	flag.StringVar(&paramsFile, "p", "default.params", "The parameters file")
+	flag.StringVar(&paramsFile, "p", "params/default.params", "The parameters file")
 	flag.BoolVar(&outputAtEnd, "end", false, "Output the final iteration to file")
-	flag.StringVar(&feedType, "feed", "constant", "Cell feeding method: constant, or random")
+	flag.StringVar(&feedType, "feed", "constant", "Cell feeding method: constant, random, or trait")
 	flag.Parse()
 
 	debug("Verbose output is on")

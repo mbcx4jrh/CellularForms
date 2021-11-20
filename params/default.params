@@ -4,4 +4,4 @@ planarFactor = 0.7
 bulgeFactor = 0.0
 repulsionRange = 2.5
 repulsionFactor = 0.7
-feedRate=0.05
+feedRate=0.1

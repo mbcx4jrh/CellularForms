@@ -91,6 +91,9 @@ func (cf *cellform) Split(c_idx int) {
 	cf.computeNewPosition(c)
 	cf.computeNewPosition(daughter)
 	c.food -= 1
+
+	//CellReport("after split - parent ", c)
+	//CellReport("after split - child  ", daughter)
 }
 
 func NewCell(position, normal vec3.Vector3) Cell {
@@ -104,11 +107,11 @@ func NewCell(position, normal vec3.Vector3) Cell {
 }
 
 func (cf *cellform) computeNewPosition(c *Cell) {
-	p := c.position
+	p := vec3.Zero()
 	for _, n := range c.links {
 		p = vec3.Add(p, cf.Cell(n).position)
 	}
-	count := float64(len(c.links)) + 1
+	count := float64(len(c.links))
 	c.position = vec3.Div(p, count)
 }
 

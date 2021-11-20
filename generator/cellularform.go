@@ -102,9 +102,9 @@ func (cf *cellform) iterate() {
 
 			between := vec3.Subtract(cell.position, o.(*Cell).position)
 			dist2 := between.LengthSqr()
-			if dist2 < r2 {
-				d_collision_sum = vec3.Add(d_collision_sum, vec3.Mult(between, (r2-dist2)/r2))
-			}
+			//if dist2 < r2 {
+			d_collision_sum = vec3.Add(d_collision_sum, vec3.Mult(between, (r2-dist2)/r2))
+			//}
 		}
 
 		nearby := len(ns)
