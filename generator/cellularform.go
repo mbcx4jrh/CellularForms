@@ -52,7 +52,7 @@ func (cf *cellform) iterate() {
 
 	treePoints := make([]point.P, len(cf.cells))
 	for i := range cf.cells {
-		treePoints[i] = TreePoint{cf.cells[i].P(), i}
+		treePoints[i] = GetTreePoint(i, &cf.cells[i])
 	}
 	time_conv := time.Now()
 
@@ -100,7 +100,7 @@ func (cf *cellform) iterate() {
 
 		for _, o := range ns {
 
-			other := &cf.cells[o.(TreePoint).cellIndex]
+			other := &cf.cells[o.(*TreePoint).cellIndex]
 
 			between := vec3.Subtract(cell.position, other.position)
 			dist2 := between.LengthSqr()

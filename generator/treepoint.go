@@ -12,3 +12,8 @@ type TreePoint struct {
 func (tp TreePoint) P() vector.V {
 	return tp.p
 }
+
+func GetTreePoint(i int, c *Cell) *TreePoint {
+	tp := TreePoint{c.P(), i}
+	return &tp
+}
