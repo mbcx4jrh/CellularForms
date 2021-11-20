@@ -129,13 +129,14 @@ func readFromCF(filename string) []cell {
 
 	reader := csv.NewReader(file)
 
-	cells := make([]cell, 500)
+	cells := make([]cell, 0, 500)
 
 	for {
 		line, err := reader.Read()
 		switch {
 		case err == nil:
 			cells = append(cells, parseCell(line))
+
 		case err == io.EOF:
 			return cells
 		case err != nil:
