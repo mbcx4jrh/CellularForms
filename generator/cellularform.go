@@ -52,7 +52,7 @@ func (cf *cellform) iterate() {
 
 	treePoints := make([]point.P, len(cf.cells))
 	for i := range cf.cells {
-		treePoints[i] = &cf.cells[i]
+		treePoints[i] = TreePoint{cf.cells[i].P(), i}
 	}
 	time_conv := time.Now()
 
@@ -100,7 +100,9 @@ func (cf *cellform) iterate() {
 
 		for _, o := range ns {
 
-			between := vec3.Subtract(cell.position, o.(*Cell).position)
+			other := &cf.cells[o.(TreePoint).cellIndex]
+
+			between := vec3.Subtract(cell.position, other.position)
 			dist2 := between.LengthSqr()
 			//if dist2 < r2 {
 			d_collision_sum = vec3.Add(d_collision_sum, vec3.Mult(between, (r2-dist2)/r2))
