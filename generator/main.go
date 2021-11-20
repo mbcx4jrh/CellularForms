@@ -18,16 +18,20 @@ func main() {
 	var folder string
 	var filePrefix string
 	var paramsFile string
+	var outputAtEnd bool
 	var form *cellform
+	var feedType string
 
 	flag.BoolVar(&verbose, "v", false, "Verbose output")
 	flag.IntVar(&iterations, "i", 100, "Number of iterations to compute")
 	flag.IntVar(&debugFreq, "df", 1, "If verbose set, iteration debug will be output after this number of iterations")
 	flag.IntVar(&maxCells, "n", 1000, "Maximum number of cells that can be generated")
-	flag.IntVar(&outputFreq, "of", 10, "the frequency at whoh an output file is generated")
+	flag.IntVar(&outputFreq, "of", 0, "the frequency at which an output file is generated, 0 means no output files")
 	flag.StringVar(&folder, "o", "output", "The folder name for the output files")
 	flag.StringVar(&filePrefix, "f", "cell-", "The file name prefix to use for output files")
 	flag.StringVar(&paramsFile, "p", "default.params", "The parameters file")
+	flag.BoolVar(&outputAtEnd, "end", false, "Output the final iteration to file")
+	flag.StringVar(&feedType, "feed", "constant", "Cell feeding method: constant, or random")
 	flag.Parse()
 
 	debug("Verbose output is on")
@@ -35,9 +39,12 @@ func main() {
 	params := getParams(paramsFile)
 	debug(params.asString())
 
-	debug("Initialising cell array to maximum of " + strconv.Itoa(maxCells) + "...")
+	rules := GetRules(feedType)
+	debug(rules.AsString())
 
-	form = NewCellform(maxCells, params)
+	debug("Initialising cell array to maximum of " + strconv.Itoa(maxCells) + "...")
+	form = NewCellform(maxCells, params, rules)
+
 	form.seedMesh(isocahedron())
 	debug("Initial seed mesh contains " + strconv.Itoa(len(form.cells)) + " cells")
 
@@ -55,18 +62,15 @@ func main() {
 		if i%debugFreq == 0 {
 			debug(fmt.Sprintf("Iteration %d", i))
 		}
-		if i%outputFreq == 0 {
+		if outputFreq != 0 && i%outputFreq == 0 {
 			writer.writeNextFile(form.cells)
 		}
 		form.iterate()
 	}
-	debug("Finished after " + strconv.Itoa(iterations) + " iterations")
-}
-
-func debug(message string) {
-	if verbose {
-		println(message)
+	if outputAtEnd {
+		writer.writeNextFile(form.cells)
 	}
+	debug("Finished after " + strconv.Itoa(iterations) + " iterations")
 }
 
 func getParams(filename string) cellformParams {

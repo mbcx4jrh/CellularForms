@@ -7,6 +7,7 @@
 
 global_settings { 
     ambient_light rgb<0.1,0.1,0.1>
+    assumed_gamma 1.0
 }
 
 // Auto generated below 

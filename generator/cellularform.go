@@ -25,12 +25,13 @@ type cellformParams struct {
 type cellform struct {
 	cells    []Cell
 	params   cellformParams
+	rules    Rules
 	maxCells int
 }
 
-func NewCellform(maxCells int, params cellformParams) *cellform {
+func NewCellform(maxCells int, params cellformParams, rules Rules) *cellform {
 	var cells []Cell = make([]Cell, maxCells)
-	return &cellform{cells[0:0], params, maxCells}
+	return &cellform{cells[0:0], params, rules, maxCells}
 }
 
 func (cf *cellform) Cell(i int) *Cell {
@@ -142,7 +143,7 @@ func (c *cellform) updatePositionsAndFeed() {
 	for i := 0; i < len(c.cells); i++ {
 		cell := &(c.cells[i])
 		cell.position = cell.updatedPosition
-		cell.food += c.params.feedRate
+		c.rules.feeder(cell, c.params.feedRate)
 	}
 }
 

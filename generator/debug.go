@@ -7,6 +7,16 @@ import (
 
 //some debug functions
 
+func debug(message string) {
+	if verbose {
+		println(message)
+	}
+}
+
+func debugf(message string, params ...interface{}) {
+	debug(fmt.Sprintf(message, params))
+}
+
 func CellReport(msg string, c *Cell) {
 	format := msg + " Cell %d, links to %v"
 	debug(fmt.Sprintf(format, c.id, c.links))

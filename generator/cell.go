@@ -94,11 +94,11 @@ func (cf *cellform) Split(c_idx int) {
 }
 
 func NewCell(position, normal vec3.Vector3) Cell {
-	//c := Cell{nextCellId, position, position, normal, 0, []int{}}
-	c := Cell{}
-	c.id = nextCellId
-	c.position = position
-	c.normal = position
+	c := Cell{nextCellId, position, position, normal, 0, 0, 0, []int{}}
+	//c := Cell{}
+	//c.id = nextCellId
+	//c.position = position
+	//c.normal = position
 	nextCellId++
 	return c
 }

@@ -72,7 +72,7 @@ func writePovRayFile(cells []cell, filename string, s stats) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	writeCameraAndLight(file, s)
+	writeCameraAndlight(file, s)
 
 	for _, c := range cells {
 		if c.position.Z < slice {
@@ -89,21 +89,29 @@ func writePovRayFile(cells []cell, filename string, s stats) {
 	}
 }
 
-func writeCameraAndLight(file *os.File, s stats) {
+func writeCameraAndlight(file *os.File, s stats) {
 	camera := vec3.New(0, 2, -5)
-	light := vec3.New(2, 4, -3)
+	light1 := vec3.New(2, 4, -3)
+	light2 := vec3.New(-2, 4, -5)
 
 	width := (s.max.X - s.min.X + 1.0) / scale // the 1,0 is the width of a sphere
 	debugf("Using scaled width of %v", width)
 	camera = vec3.Mult(camera, width)
-	light = vec3.Mult(light, width)
+	light1 = vec3.Mult(light1, width)
+	light2 = vec3.Mult(light2, width)
 
 	file.WriteString("camera {\n")
 	file.WriteString(fmt.Sprintf("  location <%v, %v, %v>\n", camera.X, camera.Y, camera.Z))
 	file.WriteString("  look_at <0, 0, 1>\n")
 	file.WriteString("}\n")
+
+	writeLight(file, light1)
+	writeLight(file, light2)
+}
+
+func writeLight(file *os.File, p vec3.Vector3) {
 	file.WriteString("light_source {\n")
-	file.WriteString(fmt.Sprintf("  <%v, %v, %v> colour White\n", light.X, light.Y, light.Z))
+	file.WriteString(fmt.Sprintf("  <%v, %v, %v> colour White\n", p.X, p.Y, p.Z))
 	file.WriteString("}\n")
 }
 
