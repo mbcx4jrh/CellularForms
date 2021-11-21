@@ -42,7 +42,7 @@ func randomFeeder(cell *Cell, rate float64) {
 
 func trait1Feeder(cell *Cell, rate float64) {
 	m := 1.0
-	if cell.trait == 1 && cell.age > 200 {
+	if cell.trait == 1 && cell.age > 50 {
 		m = 1.5
 	}
 	randomFeeder(cell, rate*m)
