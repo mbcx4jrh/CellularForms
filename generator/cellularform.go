@@ -56,9 +56,11 @@ func (cf *cellform) iterate() {
 	}
 	time_conv := time.Now()
 
-	tree, err := kd.New(treePoints)
-	if err != nil {
-		log.Fatal("Error returned from building k-d tree", err)
+	var tree *kd.T
+	if stochasticTree {
+		tree = BuildTree(treePoints, 100)
+	} else {
+		tree, _ = kd.New(treePoints)
 	}
 	time_tree := time.Now()
 	for i := 0; i < len(cf.cells); i++ {

@@ -4,12 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 var verbose bool
+var stochasticTree bool
 
 func main() {
+
+	//defer profile.Start().Stop()
 
 	var iterations int
 	var debugFreq int
@@ -22,6 +27,8 @@ func main() {
 	var form *cellform
 	var feedType string
 
+	rand.Seed(time.Now().UnixNano())
+
 	flag.BoolVar(&verbose, "v", false, "Verbose output")
 	flag.IntVar(&iterations, "i", 100, "Number of iterations to compute")
 	flag.IntVar(&debugFreq, "df", 1, "If verbose set, iteration debug will be output after this number of iterations")
@@ -32,6 +39,7 @@ func main() {
 	flag.StringVar(&paramsFile, "p", "params/default.params", "The parameters file")
 	flag.BoolVar(&outputAtEnd, "end", false, "Output the final iteration to file")
 	flag.StringVar(&feedType, "feed", "constant", "Cell feeding method: constant, random, or trait")
+	flag.BoolVar(&stochasticTree, "stochastic", false, "Use a stachastic k-d tree (quick)")
 	flag.Parse()
 
 	debug("Verbose output is on")
